@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>It's ur BD 💥</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0; 
+            text-align: center;
+            background-image: url('wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .cake-container {
+            position: relative;
+        }
+
+        .cake {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .layer {
+            border-radius: 10px;
+            height: 40px;
+        }
+
+        .layer.one {
+            width: 50px;
+            transform: translateX(50px);
+            background: radial-gradient(circle, white 7px, skyblue 7px), skyblue;
+            background-size: 10px 40px;
+        }
+
+        .layer.two {
+            width: 100px;
+            background: radial-gradient(circle, white 10px, pink 10px), pink;
+            background-size: 10px 40px;
+            background-position-x: 10px;
+            transform: translateX(25px);
+        }
+
+        .layer.three {
+            width: 150px;
+            background: radial-gradient(circle, white 10px, chocolate 10px), chocolate;
+            background-size: 10px 40px;
+        }
+
+        .candle {
+            background: rgba(255, 255, 255, 1);
+            border-radius: 2px;
+            position: absolute;
+            height: 40px;
+            width: 10px;
+            top: -25px;
+            left: 70px;
+            background: repeating-linear-gradient(45deg, #ee306f, #fff 10px, #ee306f 10px, #fff 10px);
+        }
+
+        .flame {
+            border-radius: 100%;
+            box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+            position: absolute;
+            top: -15px;
+            left: 1px;
+            width: 7px;
+            height: 12px;
+            cursor: pointer;
+        }
+
+        .flame.hide {
+            display: none;
+        }
+
+        .flame:nth-child(1) { animation: flame 2s infinite; }
+        .flame:nth-child(2) { animation: flame 1.5s infinite; }
+        .flame:nth-child(3) { animation: flame 1s infinite; }
+        .flame:nth-child(4) { animation: flame 0.5s infinite; }
+        .flame:nth-child(5) { animation: flame 0.2s infinite; }
+
+        @keyframes flame {
+            0% { background: rgba(254, 248, 97, 0.5); transform: translateY(0) scale(1.1); }
+            50% { background: rgba(255, 50, 0, 0.1); transform: translateY(-15px) scale(0); }
+            100% { background: rgba(254, 248, 97, 0.5); transform: translateY(0) scale(1.1); }
+        }
+
+        .button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #3495C2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 20px;
+        }
+
+        .button:hover {
+            background-color: #287ba3;
+        }
+
+        .img {
+            max-width: 5000px;
+            height: 300px;
+        }
+
+        .message {
+            font-size: 24px;
+            font-weight: bold;
+            color: rgb(216, 147, 56);
+        }
+
+        .after_message {
+            font-size: 24px;
+            font-weight: bold;
+            color: rgb(216, 147, 56);
+            display: none;
+            margin-top: 10px;
+            margin: left 900px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cake-container">
+        <div class="cake">
+            <div class="cherry"></div>
+            <div class="candle">
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+            </div>
+            <div class="layer one"></div>
+            <div class="layer two"></div>
+            <div class="layer three"></div>
+        </div>
+        <p class="after_message">Blow ur candle 🎉</p>
+    </div>
+
+    <div>
+        <img class="img" src="Video by galletita.con.manjar (online-video-cutter.com).gif" width=200 height=300 alt="waawaa">
+        <p class="message">Happy Birthday Ranon 🥳🎉</p>
+        <p class="message">Ready for your cake?</p>
+        <button class="button" onclick="showCake()">Yaaay</button>
+    </div>
+
+    <audio autoplay loop>
+        <source src="audio.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        function showCake() {
+            document.querySelector('.cake').style.display = 'block';
+            document.querySelector('.button').style.display = 'none';
+            document.querySelector('.img').style.display = 'none';
+            document.querySelectorAll('.message').forEach(msg => msg.style.display = 'none');
+            document.querySelector('.after_message').style.display = 'block';
+            startMicDetection();
+        }
+
+        async function startMicDetection() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+    
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+    
+                function detectSound() {
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for (const value of dataArray) {
+                        sum += value;
+                    }
+                    const average = sum / dataArray.length;
+    
+                    if (average > 100) {
+                        blowCandle();
+                    }
+    
+                    requestAnimationFrame(detectSound);
+                }
+    
+                detectSound();
+            } catch (err) {
+                console.error('Microphone access error:', err);
+            }
+        }
+    
+        function blowCandle() {
+            const flames = document.querySelectorAll('.flame');
+            flames.forEach(flame => flame.classList.add('hide'));
+
+            setTimeout(() => {
+                document.querySelector('.img').style.display = 'block';
+                document.querySelector('.cake').style.display = 'none';
+                document.querySelector('.after_message').style.display = 'none';
+            }, 2000);
+        }
+    
+        startMicDetection();
+    </script>
+
+</body>
+</html>
